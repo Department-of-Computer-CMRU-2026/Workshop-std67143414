@@ -15,9 +15,15 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('workshops')" :active="request()->routeIs('workshops')">
+                        {{ __('Workshops') }}
+                    </x-nav-link>
                     @can('admin')
                     <x-nav-link :href="route('events.index')" :active="request()->routeIs('events.*')">
                         {{ __('Manage Events') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.registrations')" :active="request()->routeIs('admin.registrations')">
+                        {{ __('Registrations') }}
                     </x-nav-link>
                     @endcan
                 </div>
@@ -75,9 +81,15 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('workshops')" :active="request()->routeIs('workshops')">
+                {{ __('Workshops') }}
+            </x-responsive-nav-link>
             @can('admin')
             <x-responsive-nav-link :href="route('events.index')" :active="request()->routeIs('events.*')">
                 {{ __('Manage Events') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.registrations')" :active="request()->routeIs('admin.registrations')">
+                {{ __('Registrations') }}
             </x-responsive-nav-link>
             @endcan
         </div>

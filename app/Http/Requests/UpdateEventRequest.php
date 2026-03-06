@@ -11,7 +11,7 @@ class UpdateEventRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->isAdmin();
     }
 
     /**
@@ -22,7 +22,10 @@ class UpdateEventRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => 'required|string|max:255',
+            'speaker' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'total_seats' => 'required|integer|min:' . $this->route('event')->registrations()->count(),
         ];
     }
 }

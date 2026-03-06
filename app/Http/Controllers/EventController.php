@@ -31,14 +31,7 @@ class EventController extends Controller
      */
     public function store(StoreEventRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'speaker' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'total_seats' => 'required|integer|min:1',
-        ]);
-
-        Event::create($validated);
+        Event::create($request->validated());
 
         return redirect()->route('events.index')->with('success', 'Event created successfully.');
     }
@@ -65,14 +58,7 @@ class EventController extends Controller
      */
     public function update(UpdateEventRequest $request, Event $event)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'speaker' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'total_seats' => 'required|integer|min:' . $event->registrations()->count(),
-        ]);
-
-        $event->update($validated);
+        $event->update($request->validated());
 
         return redirect()->route('events.index')->with('success', 'Event updated successfully.');
     }
@@ -84,5 +70,10 @@ class EventController extends Controller
     {
         $event->delete();
         return redirect()->route('events.index')->with('success', 'Event deleted successfully.');
+    }
+    public function registrations()
+    {
+        $events = Event::with('registrations.user')->get();
+        return view('admin.registrations', compact('events'));
     }
 }
