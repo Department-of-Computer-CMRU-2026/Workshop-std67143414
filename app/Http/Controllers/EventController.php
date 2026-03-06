@@ -6,6 +6,7 @@ use App\Models\Event;
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 
+
 class EventController extends Controller
 {
     /**
@@ -13,7 +14,8 @@ class EventController extends Controller
      */
     public function index()
     {
-        //
+        $events = Event::withCount('registrations')->get();
+        return view('events.index', compact('events'));
     }
 
     /**
@@ -21,7 +23,7 @@ class EventController extends Controller
      */
     public function create()
     {
-        //
+        return view('events.create');
     }
 
     /**
@@ -29,7 +31,16 @@ class EventController extends Controller
      */
     public function store(StoreEventRequest $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'speaker' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'total_seats' => 'required|integer|min:1',
+        ]);
+
+        Event::create($validated);
+
+        return redirect()->route('events.index')->with('success', 'Event created successfully.');
     }
 
     /**
@@ -37,7 +48,8 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        //
+        $event->load('registrations.user');
+        return view('events.show', compact('event'));
     }
 
     /**
@@ -45,7 +57,7 @@ class EventController extends Controller
      */
     public function edit(Event $event)
     {
-        //
+        return view('events.edit', compact('event'));
     }
 
     /**
@@ -53,7 +65,16 @@ class EventController extends Controller
      */
     public function update(UpdateEventRequest $request, Event $event)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'speaker' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'total_seats' => 'required|integer|min:' . $event->registrations()->count(),
+        ]);
+
+        $event->update($validated);
+
+        return redirect()->route('events.index')->with('success', 'Event updated successfully.');
     }
 
     /**
@@ -61,6 +82,7 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
-        //
+        $event->delete();
+        return redirect()->route('events.index')->with('success', 'Event deleted successfully.');
     }
 }
